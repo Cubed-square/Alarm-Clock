@@ -15,7 +15,7 @@ I2C_NUM_COLS = 16
 i2c = I2C(0, sda=machine.Pin(0), scl=machine.Pin(1), freq=400000)
 lcd = I2cLcd(i2c, I2C_ADDR, I2C_NUM_ROWS, I2C_NUM_COLS)   ''' 
 from time import sleep
-from time_circuit.py import count
+from time_circuit import count
 hour = int(input("What hour is it?: "))
 minute = int(input("What minute is it?: "))
 second = int(input("What second is it?: "))
@@ -31,5 +31,5 @@ def startup(hr, mini, sec):
     lcd.move_to(15,1)
     lcd.blink_cursor_on()'''
 startup(hour, minute, second)
-while True:
-    count(hour, minute, second)
+
+count(hour, minute, second)
