@@ -1,7 +1,8 @@
 from time import sleep
+On = True
 #Time increment:
 def count(timeH, timeM, timeS):
-    while True:
+    while On:
         timeS += 1
         if timeS >= 60:
             timeS = 0
