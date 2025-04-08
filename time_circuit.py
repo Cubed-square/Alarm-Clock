@@ -1,10 +1,6 @@
 from time import sleep
-
 #Time increment:
-timeH = 0
-timeM = 0
-timeS = 0
-while True:
+def count(timeH, timeM, timeS):
     timeS += 1
     if timeS >= 3:
         timeS = 0
