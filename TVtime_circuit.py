@@ -31,6 +31,6 @@ def TVcount(timeH, timeM, timeS):
         if timeH >= 12:
             timeH = 0
             day != day
-            lcd.clear
-        lcd.putstr(f"{timeH}:{timeM}:{timeS}")
+        lcd.clear()
+        lcd.putstr(f"Time: {timeH}:{timeM}:{timeS}")
         sleep(1)

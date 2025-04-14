@@ -23,7 +23,7 @@ def TFcount(timeH, timeM, timeS):
             timeH += 1
         if timeH >= 24:
             timeH = 0
-            lcd.clear
+        lcd.clear()
         lcd.putstr(f"Time: {timeH}:{timeM}:{timeS}")
         lcd.move_to(0,0)
         sleep(1)
