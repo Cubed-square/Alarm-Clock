@@ -23,14 +23,13 @@ CLK_Pin = Pin(12,Pin.IN,Pin.PULL_UP)
 SW = Pin(11,Pin.IN,Pin.PULL_UP)
 value = 0
 previousValue = 1
-numboptions = 2
 swvalue = False
 
-hour = int(input("What hour is it?: "))
-minute = int(input("What minute is it?: "))
-second = int(input("What second is it?: "))
+hour = 1
+minute = 00
+second = 00
 
-def rotary_changed():
+def rotary_changed(numboptions):
     global previousValue
     global value
     global swvalue
@@ -46,9 +45,29 @@ def rotary_changed():
     if SW.value() == 0:       
         swvalue = True
         return swvalue
+def timeset(hourset):
+    global value,swvalue,previousValue, hour
+    lcd.clear()
+    lcd.putstr(f"Hour: {hour}")
+    sleep(1)
+    while True:
+        rotary_changed(hourset+1)
+        if value != previousValue:
+            lcd.clear()
+            if value == 0:
+                value = 1
+            lcd.putstr(f"Hour: {value}")
+            sleep(0.05)
+        if swvalue == True:
+            if value == 0:
+                value = 1
+            hour = value
+            print("button pressed for time circuit")
+            break
+    print(hour)
 
 def startup():
-    global swvalue
+    global swvalue,value
     lcd.clear()
     lcd.putstr("24-Hour")
     lcd.move_to(0,1)
@@ -56,7 +75,7 @@ def startup():
     lcd.move_to(15,0)
     lcd.blink_cursor_on()
     while True:
-        rotary_changed()
+        rotary_changed(2)
         if value == 0:
             lcd.move_to(15,0)
         elif value == 1:
@@ -65,6 +84,14 @@ def startup():
             print("ERROR ADJUST NUMBOPTIONS")
         if swvalue == True:
             print("button pressed")
+            if value == 0:
+                lcd.hide_cursor()
+                timeset(24)
+                TFcount(hour,minute,second)
+            elif value == 1:
+                lcd.hide_cursor()
+                timeset(12)
+                TVcount(hour,minute,second)
             lcd.clear()
             break
         
@@ -73,7 +100,3 @@ def startup():
     print("loop complete")
 
 startup()
-'''
-TFcount(hour, minute, second)
-TVcount(hour, minute, second)
-'''
