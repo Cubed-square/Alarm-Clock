@@ -1,6 +1,7 @@
 import utime
 from utime import sleep
 import machine
+from picozero import Speaker
 from machine import I2C,ADC,Pin
 from lcd_api import LcdApi
 from pico_i2c_lcd import I2cLcd
@@ -16,18 +17,68 @@ I2C_NUM_ROWS = 2
 I2C_NUM_COLS = 16
 
 #creating components
+#Buzzer
+speaker = Speaker(5)
+BEAT = 1
+#Display
 i2c = I2C(0, sda=machine.Pin(0), scl=machine.Pin(1), freq=400000)
 lcd = I2cLcd(i2c, I2C_ADDR, I2C_NUM_ROWS, I2C_NUM_COLS)
+#Rotary Encoder
 DT_Pin = Pin(13,Pin.IN,Pin.PULL_UP)
 CLK_Pin = Pin(12,Pin.IN,Pin.PULL_UP)
 SW = Pin(11,Pin.IN,Pin.PULL_UP)
 value = 0
 previousValue = 1
 swvalue = False
-
+#Time
 hour = 1
 minute = 00
 second = 00
+
+class song:
+    def stocksong():
+        global BEAT
+        BEAT = .25 #120 BPM
+        global included
+        included = [ ['d4', BEAT / 2], ['d#4', BEAT / 2], ['f4', BEAT], ['d5', BEAT], ['a#4', BEAT], ['d4', BEAT],  
+                      ['f4', BEAT], ['d#4', BEAT], ['d#4', BEAT], ['c4', BEAT / 2],['d4', BEAT / 2], ['d#4', BEAT], 
+                      ['c5', BEAT], ['a4', BEAT], ['d4', BEAT], ['g4', BEAT], ['f4', BEAT], ['f4', BEAT], ['d4', BEAT / 2],
+                      ['d#4', BEAT / 2], ['f4', BEAT], ['g4', BEAT], ['a4', BEAT], ['a#4', BEAT], ['a4', BEAT], ['g4', BEAT],
+                      ['g4', BEAT], ['', BEAT / 2], ['a#4', BEAT / 2], ['c5', BEAT / 2], ['d5', BEAT / 2], ['c5', BEAT / 2],
+                      ['a#4', BEAT / 2], ['a4', BEAT / 2], ['g4', BEAT / 2], ['a4', BEAT / 2], ['a#4', BEAT / 2], ['c5', BEAT],
+                      ['f4', BEAT], ['f4', BEAT], ['f4', BEAT / 2], ['d#4', BEAT / 2], ['d4', BEAT], ['f4', BEAT], ['d5', BEAT],
+                      ['d5', BEAT / 2], ['c5', BEAT / 2], ['b4', BEAT], ['g4', BEAT], ['g4', BEAT], ['c5', BEAT / 2],
+                      ['a#4', BEAT / 2], ['a4', BEAT], ['f4', BEAT], ['d5', BEAT], ['a4', BEAT], ['a#4', BEAT * 1.5]]
+        speaker.play(included)
+
+    def smokonwat():
+        global BEAT
+        BEAT = 2.088 #115 BPM
+        global smokeonwater
+        smokeonwater = [['g3',BEAT/4],['a#3',BEAT/4],['c4',BEAT/4],['',BEAT/8],['g3',BEAT/8],['',BEAT/8],['a#3',BEAT/4],['d#4',BEAT/8],['c4',BEAT/4]]
+        speaker.play(smokeonwater)
+
+    def polkka(): #Ab-> G#; Bb -> A#; Eb -> D#
+        global BEAT
+        BEAT = 1.5 #120bpm = 0.5s; 1.5 is set for wokwi sim
+        sakijar = [['g4',BEAT/16],['a4',BEAT/16],['b4',BEAT/16], #MEASURE 1
+        ['c5',BEAT/8],['g4',BEAT/16],['g#4',BEAT/16],['g4',BEAT/16],['f4',BEAT/8],['d#4',BEAT/8], #MEASURE 2
+        ['d#4',BEAT/16],['f4',BEAT/16],['d#4',BEAT/16],['d4',BEAT/8],['d4',BEAT/16],['g3',BEAT/16],['b3',BEAT/16],['d4',BEAT/16], #MEASURE 3
+        ['g4',BEAT/8],['f4',BEAT/16],['g4',BEAT/16],['f4',BEAT/16],['d#4',BEAT/8],['d4',BEAT/8], #MEASURE 4
+        ['d#4',BEAT/16],['d4',BEAT/16],['c4',BEAT/8],['b3',BEAT/16],['c4',BEAT/16],['d#4',BEAT/16],['g4',BEAT/16],#MEASURE 5
+        ['c5',BEAT/8],['g4',BEAT/16],['g#4',BEAT/16],['g4',BEAT/16],['f4',BEAT/8],['d#4',BEAT/8], #MEASURE 6
+        ['d#4',BEAT/16],['f4',BEAT/16],['d#4',BEAT/16],['d4',BEAT/8],['d4',BEAT/16],['g3',BEAT/16],['b3',BEAT/16],['d4',BEAT/16], #MEASURE 7
+        ['g4',BEAT/8],['f4',BEAT/16],['g4',BEAT/16],['f4',BEAT/16],['d#4',BEAT/8],['d4',BEAT/8], #MEASURE 8
+        ['c4',BEAT/8],['',BEAT/8],['c4',BEAT/8]]
+        speaker.play(sakijar)
+
+    def megalovania():
+        global BEAT
+        BEAT = 2
+        global megalov
+        megalov = [['c3',BEAT/16],['c3',BEAT/16],['d4',BEAT/8],['a3',BEAT/8],['',BEAT/16],['g#3',BEAT/16],['',BEAT/16],
+                   ['g3',BEAT/16],['',BEAT/16],['f3',BEAT/16],['f3',BEAT/16],['d3',BEAT/16],['f3',BEAT/16],['g3',BEAT/16]]
+        speaker.play(megalov)
 
 def rotary_changed(numboptions):
     global previousValue
@@ -45,6 +96,7 @@ def rotary_changed(numboptions):
     if SW.value() == 0:       
         swvalue = True
         return swvalue
+
 def timeset(hourset):
     global value,swvalue,previousValue, hour
     lcd.clear()
@@ -57,8 +109,8 @@ def timeset(hourset):
             if value == 0:
                 value = 1
             lcd.putstr(f"Hour: {value}")
-            sleep(0.05)
-        if swvalue == True:
+            sleep(0.25)
+        if swvalue == False:
             if value == 0:
                 value = 1
             hour = value
@@ -83,6 +135,7 @@ def startup():
         else:
             print("ERROR ADJUST NUMBOPTIONS")
         if swvalue == True:
+            
             print("button pressed")
             if value == 0:
                 lcd.hide_cursor()
@@ -93,10 +146,12 @@ def startup():
                 timeset(12)
                 TVcount(hour,minute,second)
             lcd.clear()
-            break
-        
+            swvalue = False
+            break 
     while True:
         rotary_changed()
     print("loop complete")
 
+
 startup()
+#speaker.play(song.megalovania())
