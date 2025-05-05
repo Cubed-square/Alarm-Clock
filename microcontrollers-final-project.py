@@ -97,27 +97,44 @@ def rotary_changed(numboptions):
         swvalue = True
         return swvalue
 
-def timeset(hourset):
-    global value,swvalue,previousValue, hour
+def MILtimeset(hourset):
+    global value,swvalue,previousValue,hour,minute
     lcd.clear()
     lcd.putstr(f"Hour: {hour}")
     sleep(1)
+    swvalue = False
+    lcd.clear()
+    lcd.putstr("Hour: ")
     while True:
-        rotary_changed(hourset+1)
-        if value != previousValue:
+        rotary_changed(24)
+        lcd.move_to(5,0)
+        if (value) < 10:
+            lcd.putstr(f" {str(value)}")
+        else:
+            lcd.putstr(str(value))
+        if swvalue == True:
             lcd.clear()
-            if value == 0:
-                value = 1
-            lcd.putstr(f"Hour: {value}")
-            sleep(0.25)
-        if swvalue == False:
-            if value == 0:
-                value = 1
+            lcd.putstr(f"Selected: {value}")
             hour = value
-            print("button pressed for time circuit")
+            break
+    sleep(1)
+    swvalue = False
+    lcd.clear()
+    lcd.putstr("Minute: ")
+    while True:
+        rotary_changed(59)
+        lcd.move_to(7,0)
+        if (value) < 10:
+            lcd.putstr(f" {str(value)}")
+        else:
+            lcd.putstr(str(value))
+        if swvalue == True:
+            lcd.clear()
+            lcd.putstr(f"Selected: {value}")
+            minute = value
             break
     print(hour)
-
+    print(minute)
 def startup():
     global swvalue,value
     lcd.clear()
@@ -139,17 +156,18 @@ def startup():
             print("button pressed")
             if value == 0:
                 lcd.hide_cursor()
-                timeset(24)
+                MILtimeset(24)
                 TFcount(hour,minute,second)
             elif value == 1:
                 lcd.hide_cursor()
                 timeset(12)
-                TVcount(hour,minute,second)
+                break
             lcd.clear()
             swvalue = False
-            break 
+            break
+
     while True:
-        rotary_changed()
+        rotary_changed(hour)
     print("loop complete")
 
 
