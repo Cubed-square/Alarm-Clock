@@ -32,8 +32,8 @@ previousValue = 1
 swvalue = False
 #Time
 hour = 1
-minute = 00
-second = 00
+minute = 0
+second = 0
 
 class song:
     def stocksong():
@@ -112,6 +112,7 @@ def MILtimeset(hourset):
             lcd.putstr(f" {str(value)}")
         else:
             lcd.putstr(str(value))
+        sleep(.5)
         if swvalue == True:
             lcd.clear()
             lcd.putstr(f"Selected: {value}")
